@@ -1,4 +1,5 @@
 # CS585-Shaokang-Wang
+## Coding Standers:
 
 1. Everything must be in well-formed English where appropriate.
 
