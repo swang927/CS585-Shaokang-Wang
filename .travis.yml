@@ -3,7 +3,7 @@ compiler:
   - gcc
   - clang
   
-script: make && make test
+script: make
 
 notifications:
   email:
