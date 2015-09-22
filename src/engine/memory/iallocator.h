@@ -17,10 +17,10 @@ class IAllocator {
     virtual void construct(T* pointer, const T& copy) = 0;
     virtual void destruct(T* pointer) = 0;
     virtual void construct(T* pointer) = 0;
-
+/*
     template<class U, class... Args>
     void construct(U* pointer, Args&&... args);
-
+*/
 };
 
 

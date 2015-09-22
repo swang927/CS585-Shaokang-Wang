@@ -31,10 +31,10 @@ class DefaultAllocator : public IAllocator<T>
     void construct(T* pointer);
     void destruct(T* pointer);
     
-
+/*
     template<class U, class... Args>
     void construct(U* pointer, Args&&... args);
- 
+ */
 };
 
 
@@ -92,13 +92,13 @@ void DefaultAllocator<T>::release(T* target_memory){
 
 
 
-
+/*
 template<class T>
 template< class U, class... Args >
 void DefaultAllocator<T>::construct(U* p, Args&&... args){
 	::new((void *)p) U(std::forward<Args>(args)...);
 };
-
+*/
 
 template<class T>
 void DefaultAllocator<T>::construct(T* pointer, const T& copy){
