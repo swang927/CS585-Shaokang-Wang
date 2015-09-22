@@ -13,8 +13,8 @@ class CountingAllocator : public DefaultAllocator<T>
   public:
     CountingAllocator();
     ~CountingAllocator();
-    CountingAllocator(CountingAllocator const& other);
-    CountingAllocator& operator=(CountingAllocator const& other);
+    CountingAllocator(const CountingAllocator &other);
+    CountingAllocator& operator=(const CountingAllocator &other);
 
     const int getAllocationCount();
     const int getReleaseCount();
@@ -85,6 +85,7 @@ template<class T>
 int CountingAllocator<T>::getTotalOutstandingCount(){
     return this->totalAllocationCount - this->totalReleaseCount;
 };
+
 
 };
 

@@ -7,6 +7,7 @@
 #include "../memory/default_allocator.h"
 #include "../memory/iallocator.h"
 #include <assert.h>
+#include <string>
 
 namespace sgdc
 {
@@ -18,10 +19,10 @@ class DynamicArray {
     T *array;
     unsigned int elementCount;
     unsigned int capacity;
-	
     void Recapacity(int capacity);
 
   public:
+    DynamicArray();
     DynamicArray(sgdm::IAllocator<T>* alloc);
     DynamicArray(const DynamicArray &other); 
     const DynamicArray& operator=(const DynamicArray &other); 
@@ -41,31 +42,52 @@ class DynamicArray {
 }; 
 
 template <class T>
-DynamicArray<T>::DynamicArray(sgdm::IAllocator<T>* alloc){
-    allocator = alloc;
-    array = allocator->get(2);
+DynamicArray<T>::DynamicArray(){
+    allocator = new sgdm::DefaultAllocator<T>();
     capacity = 2;
     elementCount = 0;
+    array = allocator->get(2);
+    for (unsigned int i = 0; i < capacity; i++){
+        allocator->construct(&(array[i]));
+    }
 };
 
 template <class T>
+DynamicArray<T>::DynamicArray(sgdm::IAllocator<T>* alloc){
+    allocator = alloc;
+    capacity = 2;
+    elementCount = 0;
+    array = allocator->get(2);
+    for (unsigned int i = 0; i < capacity; i++){
+	allocator->construct(&(array[i]));
+    }
+};
+
+
+template <class T>
 DynamicArray<T>::DynamicArray(const DynamicArray<T> &other) {
-    array = allocator->get(other.capacity);
-    for (int i = 0; i < other.elementCount; i++)
-        array[i] = other.array[i];
     capacity = other.capacity;
+    allocator = other.allocator;
     elementCount = other.elementCount;
+    array = allocator->get(other.capacity);
+        for (unsigned int i = 0; i < capacity; i++)
+	    allocator->construct(&(array[i]));
+	for (unsigned int i = 0; i < elementCount; i++)
+	    array[i] = other.array[i];
 };
 
 template <class T>
 const DynamicArray<T>& DynamicArray<T>:: operator=(const DynamicArray<T> &other) {
     if (this != &other) {
-        allocator->release(array, capacity);
-        array = allocator->get(other.capacity);
-        for (int i = 0; i < other.elementCount; i++)
-            array[i] = other.array[i];
-        capacity = other.capacity;
-        elementCount = other.elementCount;
+	allocator->release(array, capacity);
+	capacity = other.capacity;
+	allocator = other.allocator;
+	elementCount = other.elementCount;
+	array = allocator->get(other.capacity);
+	for (unsigned int i = 0; i < capacity; i++)
+	    allocator->construct(&(array[i]));
+	for (unsigned int i = 0; i < elementCount; i++)
+	    array[i] = other.array[i];
     };
     return *this;
 };
@@ -79,13 +101,17 @@ DynamicArray<T>::~DynamicArray() {
 template <class T> void DynamicArray<T>::Recapacity(int newCapacity) {
     assert(capacity >= elementCount);
     T* newArray = allocator->get(newCapacity);
+	for (int i = 0; i < newCapacity; i++){
+	    allocator->construct(&(newArray[i]));
+	}
     for (unsigned int i = 0; i < elementCount; i++)
     {
-        newArray[i] = array[i];
+        newArray[i]=array[i];
     }
-    allocator->release(array, capacity);;
+    allocator->release(array, capacity);
+	capacity = newCapacity;
     array = newArray;
-    capacity = newCapacity;
+    
 };
 
 
@@ -94,7 +120,7 @@ void DynamicArray<T>::push(const T &element) {
     if (elementCount == capacity){
         Recapacity(2 * capacity);
     };
-    array[elementCount++] = element;
+	allocator->construct(&array[elementCount++], element);
 };
 
 template <class T>
@@ -107,7 +133,7 @@ void DynamicArray<T>::pushFront(T element) {
     {
         array[i] = array[i - 1];
     };
-    array[0] = element;
+	allocator->construct(&array[0], element);
 };
 
 template <class T>
@@ -142,7 +168,7 @@ const T DynamicArray<T>::at(unsigned int index){
 
 template <class T>
 T& DynamicArray<T>::operator[](int index) {
-    assert(index < elementCount && index >= 0);
+    assert((unsigned int)index < elementCount && index >= 0);
     return array[index];
 }
 
@@ -178,7 +204,6 @@ void DynamicArray<T>::insertAt(unsigned int index, const T& element){
     }
     array[index] = element;
 };
-
 
 };
 #endif
