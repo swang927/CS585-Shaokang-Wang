@@ -31,14 +31,15 @@ class DefaultAllocator : public IAllocator<T>
     void construct(T* pointer);
     void destruct(T* pointer);
     
-/*
+
     template<class U, class... Args>
     void construct(U* pointer, Args&&... args);
- */
+
 };
 
 
 template<class T>
+inline
 DefaultAllocator<T>::DefaultAllocator(){
     totalAllocationCount = 0;
     totalReleaseCount = 0;
@@ -47,11 +48,13 @@ DefaultAllocator<T>::DefaultAllocator(){
 };
 
 template<class T>
+inline
 DefaultAllocator<T>::~DefaultAllocator(){   
 };
 
 
 template<class T>
+inline
 DefaultAllocator<T>::DefaultAllocator(DefaultAllocator const& other){
     totalAllocationCount = other.totalAllocationCount;
     totalReleaseCount = other.totalReleaseCount;
@@ -60,6 +63,7 @@ DefaultAllocator<T>::DefaultAllocator(DefaultAllocator const& other){
 };
 
 template<class T>
+inline
 DefaultAllocator<T>& DefaultAllocator<T>::operator=(DefaultAllocator const& other){
     this->totalAllocationCount = other.totalAllocationCount;
     this->totalReleaseCount = other.totalReleaseCount;
@@ -69,6 +73,7 @@ DefaultAllocator<T>& DefaultAllocator<T>::operator=(DefaultAllocator const& othe
 
 
 template<class T>
+inline
 T* DefaultAllocator<T>::get(int count){
     totalAllocationCount += count;
     allocationCount += 1;
@@ -76,29 +81,31 @@ T* DefaultAllocator<T>::get(int count){
 };
 
 template<class T>
+inline
 void DefaultAllocator<T>::release(T* target_memory, int count){
 	if (target_memory != NULL){
 		totalReleaseCount += count;
 		releaseCount += 1;
-		delete target_memory;
+		::operator delete((void*)target_memory);
 	}
 };
 
 
 template<class T>
+inline
 void DefaultAllocator<T>::release(T* target_memory){
 	::operator delete((void*)target_memory);
 };
 
 
 
-/*
+
 template<class T>
 template< class U, class... Args >
 void DefaultAllocator<T>::construct(U* p, Args&&... args){
-	::new((void *)p) U(std::forward<Args>(args)...);
+     ::new((void *)p) U(std::forward<Args>(args)...);
 };
-*/
+
 
 template<class T>
 void DefaultAllocator<T>::construct(T* pointer, const T& copy){

@@ -25,6 +25,7 @@ class CountingAllocator : public DefaultAllocator<T>
 };
 
 template<class T>
+inline
 CountingAllocator<T>::CountingAllocator(){
     this->totalAllocationCount = 0;
     this->totalReleaseCount = 0;
@@ -33,10 +34,12 @@ CountingAllocator<T>::CountingAllocator(){
 };
 
 template<class T>
+inline
 CountingAllocator<T>::~CountingAllocator(){
 };
 
 template<class T>
+inline
 CountingAllocator<T>::CountingAllocator(CountingAllocator const& other){
     this->totalAllocationCount = other.totalAllocationCount;
     this->totalReleaseCount = other.totalReleaseCount;
@@ -45,6 +48,7 @@ CountingAllocator<T>::CountingAllocator(CountingAllocator const& other){
 };
 
 template<class T>
+inline
 CountingAllocator<T>& CountingAllocator<T>::operator=(CountingAllocator const& other){
     this->totalAllocationCount = other.totalAllocationCount;
     this->totalReleaseCount = other.totalReleaseCount;
@@ -54,34 +58,40 @@ CountingAllocator<T>& CountingAllocator<T>::operator=(CountingAllocator const& o
 
 
 template<class T>
+inline
 const int CountingAllocator<T>::getAllocationCount(){
     return this->allocationCount;
 };
 
 
 template<class T>
+inline
 const int CountingAllocator<T>::getReleaseCount(){
     return this->releaseCount;
 };
 
 
 template<class T>
+inline
 const int CountingAllocator<T>::getOutstandingCount(){
     return this->allocationCount-this->releaseCount;
 };
 
 
 template<class T>
+inline
 int CountingAllocator<T>::getTotalAllocationCount(){
     return this->totalAllocationCount;
 };
 
 template<class T>
+inline
 int CountingAllocator<T>::getTotalReleaseCount(){
     return this->totalReleaseCount;
 };
 
 template<class T>
+inline
 int CountingAllocator<T>::getTotalOutstandingCount(){
     return this->totalAllocationCount - this->totalReleaseCount;
 };

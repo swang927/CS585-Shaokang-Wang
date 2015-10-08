@@ -28,8 +28,11 @@ template <class T>
 class Map{
   private:
     sgdm::IAllocator<T>* allocator;
+	sgdm::DefaultAllocator<T> alloc;
     trie_node<T> root;
     sgdc::DynamicArray<std::string> key_chain;
+	sgdc::DynamicArray<T> value_chain;
+
     trie_node<T>* add_alter(char c, trie_node<T> *curr_node);
     trie_node<T>* add_next(char c, trie_node<T> *curr_node);
     void read_key(std::string key_string, trie_node<T>* curr_node);
@@ -53,8 +56,8 @@ class Map{
 
 
 template <class T>
+inline
 T& Map<T>::operator[](const std::string& key){
-    T* default_value = new T();
     trie_node<T> *curr_node;
     trie_node<T> *pass_node;
     pass_node = NULL;
@@ -120,7 +123,9 @@ T& Map<T>::operator[](const std::string& key){
 		}
 	    }
 	}
-        // insert node
+	T* default_value = allocator->get(1);
+	allocator->construct(default_value);
+    // insert node
 	if (key[i] == '\0' && pass_node && !pass_node->value){
 	    pass_node->value = default_value;
 	}
@@ -137,8 +142,8 @@ T& Map<T>::operator[](const std::string& key){
 };
 
 template <class T>
+inline
 const T& Map<T>::operator[](const std::string& key) const{
-    T* default_value = new T();
     trie_node<T> *curr_node;
     trie_node<T> *pass_node;
     pass_node = NULL;
@@ -204,7 +209,10 @@ const T& Map<T>::operator[](const std::string& key) const{
 		}
 	    }
 	}
-        // insert node
+
+	T* default_value = allocator->get(1);
+	allocator->construct(default_value);
+    // insert node
 	if (key[i] == '\0' && pass_node && !pass_node->value){
 	    pass_node->value = default_value;
 	}
@@ -221,6 +229,7 @@ const T& Map<T>::operator[](const std::string& key) const{
 }
 
 template <class T>
+inline
 bool Map<T>::has(const std::string& key){
     trie_node<T> *curr_node = &root;
     int i = 0;
@@ -255,6 +264,7 @@ bool Map<T>::has(const std::string& key){
 }
 
 template <class T>
+inline
 T Map<T>::remove(const std::string& key){
     if (!has(key))
 	return (T)NULL;
@@ -301,8 +311,9 @@ T Map<T>::remove(const std::string& key){
 }
 
 template <class T>
+inline
 sgdc::DynamicArray<std::string> Map<T>::keys() {
-    key_chain = *(new sgdc::DynamicArray<std::string>());
+	key_chain.clean();
     trie_node<T> *curr_node =  &root;
     std::string key_string = "";
 
@@ -313,22 +324,23 @@ sgdc::DynamicArray<std::string> Map<T>::keys() {
 };
 
 template <class T>
+inline
 sgdc::DynamicArray<T> Map<T>::values() {
-    sgdc::DynamicArray<T>* value_chain = new sgdc::DynamicArray<T>();
-    sgdc::DynamicArray<std::string> curr_keys = *(new sgdc::DynamicArray<std::string>());
-    curr_keys = this->keys();
-
-    for (int i = 0; i < curr_keys.getLength(); i++){
-         value_chain->push(this->operator[](curr_keys[i]));
+	sgdc::DynamicArray<std::string> curr_keys = this->keys();
+	value_chain.clean();
+    for (unsigned int i = 0; i < curr_keys.getLength(); i++){
+         value_chain.push(this->operator[](curr_keys[i]));
     };
-    return *(value_chain);
+    return value_chain;
 };
 
 
+
+// constructor 
 template <class T>
+inline
 Map<T>::Map(){
-    sgdm::DefaultAllocator<T>* alloc = new sgdm::DefaultAllocator<T>();
-    allocator = alloc;
+    allocator = &alloc;
     root.alter = NULL;
     root.next = NULL;
     root.use_time = 1;
@@ -337,6 +349,7 @@ Map<T>::Map(){
 };
 
 template <class T>
+inline
 Map<T>::Map(sgdm::IAllocator<T>* alloc){
     allocator = alloc;
     root.alter = NULL;
@@ -347,27 +360,54 @@ Map<T>::Map(sgdm::IAllocator<T>* alloc){
 };
 
 template <class T>
+inline
 Map<T>::Map(const Map &other){
     allocator = other.allocator;
-    root.alter = other.root;
+    root.alter = NULL;
+    root.next = NULL;
+    root.use_time = 1;
+    root.key = '\0';
+    root.value = NULL;
+    value_chain = const_cast<Map<T> &>(other).values();
+    key_chain = const_cast<Map<T> &>(other).keys();
+    for (unsigned int i = 0; i < value_chain.getLength(); i++){
+	this->operator[](key_chain[i]) = value_chain[i];
+    }
 };
 
 template <class T>
+inline
 const Map<T>& Map<T>:: operator=(const Map<T> &other) {
     if (this != &other) {
         allocator = other.allocator;
-	root.alter = other.root;
+	value_chain = this->values();
+	for (unsigned int i = 0; i < value_chain.getLength(); i++){
+			allocator->destruct(&value_chain[i]);
+	}
+	root.alter = NULL;
+	root.next = NULL;
+	root.use_time = 1;
+	root.key = '\0';
+	root.value = NULL;
+	value_chain = const_cast<Map<T> &>(other).values();
+	key_chain = const_cast<Map<T> &>(other).keys();
+	for (unsigned int i = 0; i < value_chain.getLength(); i++){
+	    this->operator[](key_chain[i]) = value_chain[i];
+	}
     };
     return *this;
 };
 
 template <class T>
+inline
 Map<T>::~Map(){
+	
 };
 
 
 
 template <class T>
+inline
 void Map<T>::read_key(std::string key_string, trie_node<T>* curr_node){
     if (curr_node == &root)
 	curr_node = curr_node->next;
@@ -386,7 +426,10 @@ void Map<T>::read_key(std::string key_string, trie_node<T>* curr_node){
     return;
 };
 
+
+// node insert
 template <class T>
+inline
 trie_node<T>* Map<T>::add_alter(char c, trie_node<T>* curr_node){
     trie_node<T>* new_node = new trie_node<T>;
     new_node->alter = NULL;
@@ -400,6 +443,7 @@ trie_node<T>* Map<T>::add_alter(char c, trie_node<T>* curr_node){
 }
 
 template <class T>
+inline
 trie_node<T>* Map<T>::add_next(char c, trie_node<T>* curr_node){
     trie_node<T>* new_node = new trie_node<T>;
     new_node->alter = NULL;
