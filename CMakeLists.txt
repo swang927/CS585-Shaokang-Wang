@@ -2,7 +2,6 @@
 cmake_minimum_required (VERSION 2.8)
 
 # use the c++11
-add_compile_options(-std=c++0x)
 add_definitions(-std=c++0x)
 
 #project name
