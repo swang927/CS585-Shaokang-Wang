@@ -20,7 +20,6 @@ install:
 before_script: cmake CMakeLists.txt
 
 script:
-  - $CXX --version
   - make
   
 notifications:
