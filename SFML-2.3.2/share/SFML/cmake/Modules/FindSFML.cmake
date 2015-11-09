@@ -100,8 +100,10 @@ if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
     # if we could extract them, compare with the requested version number
     if (SFML_VERSION_MAJOR)
         # transform version numbers to an integer
-		math(EXPR SFML_VERSION "SFML_VERSION_MAJOR * 10000 + SFML_VERSION_MINOR * 100")
-
+		message(STATUS ${SFML_VERSION_MAJOR})
+		message(STATUS ${SFML_VERSION_MINOR})
+		#math(EXPR SFML_VERSION "${SFML_VERSION_MAJOR} * 10000 + ${SFML_VERSION_MINOR} * 100")
+		message(STATUS ${SFML_VERSION})
         # compare them
         if(SFML_VERSION LESS SFML_REQUESTED_VERSION)
             set(SFML_VERSION_OK FALSE)
