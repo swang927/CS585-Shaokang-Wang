@@ -98,7 +98,7 @@ if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
     math(EXPR SFML_REQUESTED_VERSION "${SFML_FIND_VERSION_MAJOR} * 10000 + ${SFML_FIND_VERSION_MINOR} * 100 + ${SFML_FIND_VERSION_PATCH}")
 
     # if we could extract them, compare with the requested version number
-    if (SFML_VERSION_PATCH)
+    if (SFML_VERSION_MINOR)
         # transform version numbers to an integer
         math(EXPR SFML_VERSION "${SFML_VERSION_MAJOR} * 10000 + ${SFML_VERSION_MINOR} * 100 + ${SFML_VERSION_PATCH}")
 
