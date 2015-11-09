@@ -11,8 +11,8 @@ set(EXECUTABLE_NAME "Shaokang_game")
 add_executable(${EXECUTABLE_NAME} game.m.cpp)
 
 # Detect and add SFML
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/SFML-2.3.2/share/SFML/cmake/Modules" ${CMAKE_MODULE_PATH})
-message (STATUS ${CMAKE_MODULE_PATH}) 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/SFML-2.3.2/share/SFML/cmake/Modules")
+
 #Find any version 2.X of SFML
 find_package(SFML 2 REQUIRED system window graphics network audio)
 if(SFML_FOUND)
