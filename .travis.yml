@@ -11,6 +11,8 @@ before_install:
   # g++ 4.8
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
+  # sfml
+  - sudo apt-get install libsfml-dev
 
 install:
   # g++4.8
