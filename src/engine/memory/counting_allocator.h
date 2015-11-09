@@ -7,23 +7,40 @@
 
 namespace sgdm
 {
+
+// Provides a implementation of IAllocator<T> inherit DefaultAllocator
+// which can counting allocator to keep track of allocations and frees
 template<class T>
 class CountingAllocator : public DefaultAllocator<T>
 {
   public:
+	// Constructor
     CountingAllocator();
+	// Deconstructor
     ~CountingAllocator();
+	// Copy constructor.
     CountingAllocator(const CountingAllocator &other);
+	// Operator overload
     CountingAllocator& operator=(const CountingAllocator &other);
 
+	// Access
+	// get the number of allocate times 
     const int getAllocationCount();
+	// get the number of release times
     const int getReleaseCount();
+	// get the number of allocate times substract release times
     const int getOutstandingCount();
+	// get the total number of memory blocks has been allocate 
     int getTotalAllocationCount();
+	// get the total number of memory blocks has been released
     int getTotalReleaseCount();
+	// the total number of memory blocks still been allocated
     int getTotalOutstandingCount();
-};
 
+}; // end of class
+
+
+// Constructor
 template<class T>
 inline
 CountingAllocator<T>::CountingAllocator(){
@@ -33,11 +50,15 @@ CountingAllocator<T>::CountingAllocator(){
     this->releaseCount = 0;
 };
 
+
+// Deconstructor
 template<class T>
 inline
 CountingAllocator<T>::~CountingAllocator(){
 };
 
+
+// Copy constructor.
 template<class T>
 inline
 CountingAllocator<T>::CountingAllocator(CountingAllocator const& other){
@@ -47,6 +68,8 @@ CountingAllocator<T>::CountingAllocator(CountingAllocator const& other){
     this->releaseCount = other.releaseCount;
 };
 
+
+// Operator overload
 template<class T>
 inline
 CountingAllocator<T>& CountingAllocator<T>::operator=(CountingAllocator const& other){
@@ -56,14 +79,15 @@ CountingAllocator<T>& CountingAllocator<T>::operator=(CountingAllocator const& o
     this->releaseCount = other.releaseCount;
 };
 
-
+// Access
+// get the number of allocate times 
 template<class T>
 inline
 const int CountingAllocator<T>::getAllocationCount(){
     return this->allocationCount;
 };
 
-
+// get the number of release times
 template<class T>
 inline
 const int CountingAllocator<T>::getReleaseCount(){
@@ -71,6 +95,7 @@ const int CountingAllocator<T>::getReleaseCount(){
 };
 
 
+// get the number of allocate times substract release times
 template<class T>
 inline
 const int CountingAllocator<T>::getOutstandingCount(){
@@ -78,18 +103,23 @@ const int CountingAllocator<T>::getOutstandingCount(){
 };
 
 
+// get the total number of memory blocks has been allocate 
 template<class T>
 inline
 int CountingAllocator<T>::getTotalAllocationCount(){
     return this->totalAllocationCount;
 };
 
+
+// get the total number of memory blocks has been released
 template<class T>
 inline
 int CountingAllocator<T>::getTotalReleaseCount(){
     return this->totalReleaseCount;
 };
 
+
+// the total number of memory blocks still been allocated
 template<class T>
 inline
 int CountingAllocator<T>::getTotalOutstandingCount(){
@@ -97,6 +127,5 @@ int CountingAllocator<T>::getTotalOutstandingCount(){
 };
 
 
-};
-
+}; // end of namespace
 #endif
