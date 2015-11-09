@@ -16,7 +16,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/SFML-2.3.2/share/SFML/cmake/Modules")
 #setup subdirectory
 add_subdirectory (test)
 add_subdirectory (src) 
-add_subdirectory (${CMAKE_MODULE_PATH}) 
 
 
 #add libraries
