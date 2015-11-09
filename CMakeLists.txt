@@ -13,6 +13,21 @@ add_executable(${EXECUTABLE_NAME} game.m.cpp)
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/SFML-2.3.2/share/SFML/cmake/Modules")
 
+#setup subdirectory
+add_subdirectory (test)
+add_subdirectory (src) 
+add_subdirectory (${CMAKE_MODULE_PATH}) 
+
+
+#add libraries
+target_link_libraries (${EXECUTABLE_NAME} Container)
+target_link_libraries (${EXECUTABLE_NAME} Data)
+target_link_libraries (${EXECUTABLE_NAME} Input)
+target_link_libraries (${EXECUTABLE_NAME} Memory)
+target_link_libraries (${EXECUTABLE_NAME} Rendering)
+target_link_libraries (${EXECUTABLE_NAME} Scene)
+
+
 #Find any version 2.X of SFML
 find_package(SFML 2 REQUIRED system window graphics network audio)
 if(SFML_FOUND)
@@ -40,16 +55,5 @@ endif()
 add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/player.png")
 
 
-#setup subdirectory
-add_subdirectory (test)
-add_subdirectory (src) 
 
-
-#add libraries
-target_link_libraries (${EXECUTABLE_NAME} Container)
-target_link_libraries (${EXECUTABLE_NAME} Data)
-target_link_libraries (${EXECUTABLE_NAME} Input)
-target_link_libraries (${EXECUTABLE_NAME} Memory)
-target_link_libraries (${EXECUTABLE_NAME} Rendering)
-target_link_libraries (${EXECUTABLE_NAME} Scene)
 
