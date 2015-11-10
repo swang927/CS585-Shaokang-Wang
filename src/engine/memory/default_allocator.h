@@ -2,7 +2,7 @@
 
 #ifndef INCLUDED_DEFAULT_ALLOCATOR
 #define INCLUDED_DEFAULT_ALLOCATOR
-
+    
 #include "iallocator.h"
 
 namespace sgdm
@@ -13,44 +13,44 @@ template<class T>
 class DefaultAllocator : public IAllocator<T> 
 {
   protected:
-	// the total number of memory blocks has been allocate
+    // the total number of memory blocks has been allocate
     unsigned int totalAllocationCount;
-	// the total number of memory blocks has been released
+    // the total number of memory blocks has been released
     unsigned int totalReleaseCount;
-	// the number of allocate times
+    // the number of allocate times
     unsigned int allocationCount;
-	// the number of release times
+    // the number of release times
     unsigned int releaseCount;
 
   public:
-	// Constructor
+    // Constructor
     DefaultAllocator();
-	// Deconstructor
+    // Deconstructor
     ~DefaultAllocator();
     // Copy constructor.
     DefaultAllocator(const DefaultAllocator &other);
-	// Operator overload
+    // Operator overload
     DefaultAllocator& operator=(const DefaultAllocator &other);
 
-	// Access
-	// Get the current numbers of allocated memory size 
+    // Access
+    // Get the current numbers of allocated memory size 
     int get_count(){ return totalAllocationCount - totalReleaseCount; };
 
-	// Implement the interface "IAllocator" //
-	// allocate the certain times of corresponding type memory and return the address
+    // Implement the interface "IAllocator" //
+    // allocate the certain times of corresponding type memory and return the address
     T* get(int count);
-	// free the memory start from the pointed address with certain size 
+    // free the memory start from the pointed address with certain size 
     void release(T* target_memory, int count);
-	// free the memory start from the pointed address
+    // free the memory start from the pointed address
     void release(T* target_memory);
-	// constrct the object as the copy
+    // constrct the object as the copy
     void construct(T* pointer, const T& copy);
-	// construct the object as default in the ceratin address
+    // construct the object as default in the ceratin address
     void construct(T* pointer);
-	// destruct the oject as default in the ceratin address
+    // destruct the oject as default in the ceratin address
     void destruct(T* pointer);
     
-	// construct the object with corresponding arguments in the ceratin address
+    // construct the object with corresponding arguments in the ceratin address
     template<class U, class... Args>
     void construct(U* pointer, Args&&... args);
 
@@ -112,11 +112,11 @@ T* DefaultAllocator<T>::get(int count){
 template<class T>
 inline
 void DefaultAllocator<T>::release(T* target_memory, int count){
-	if (target_memory != NULL){
-		totalReleaseCount += count;
-		releaseCount += 1;
-		::operator delete((void*)target_memory);
-	}
+    if (target_memory != NULL){
+        totalReleaseCount += count;
+        releaseCount += 1;
+        ::operator delete((void*)target_memory);
+    }
 };
 
 
@@ -124,28 +124,28 @@ void DefaultAllocator<T>::release(T* target_memory, int count){
 template<class T>
 inline
 void DefaultAllocator<T>::release(T* target_memory){
-	::operator delete((void*)target_memory);
+    ::operator delete((void*)target_memory);
 };
 
 
 // construct the object as default in the ceratin address
 template<class T>
 void DefaultAllocator<T>::construct(T* pointer){
-	new((void *)pointer) T();
+    new((void *)pointer) T();
 };
 
 
 // constrct the object as the copy
 template<class T>
 void DefaultAllocator<T>::construct(T* pointer, const T& copy){
-	new((void *)pointer) T(copy);
+    new((void *)pointer) T(copy);
 };
 
 
 // destruct the oject as default in the ceratin address
 template<class T>
 void DefaultAllocator<T>::destruct(T* pointer){
-	pointer->~T();
+    pointer->~T();
 };
 
 
@@ -154,7 +154,7 @@ template<class T>
 template< class U, class... Args >
 inline
 void DefaultAllocator<T>::construct(U* p, Args&&... args){
-	::new((void *)p) U(std::forward<Args>(args)...);
+    ::new((void *)p) U(std::forward<Args>(args)...);
 };
 
 

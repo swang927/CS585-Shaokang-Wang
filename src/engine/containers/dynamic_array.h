@@ -1,5 +1,5 @@
 //  dynamic_array.h
-
+    
 #ifndef INCLUDED_DYNAMIC_ARRAY
 #define INCLUDED_DYNAMIC_ARRAY
 
@@ -15,61 +15,61 @@ namespace sgdc
 template <class T>
 class DynamicArray {
   private:
-	// allocator use to allocate 
+    // allocator use to allocate 
     sgdm::IAllocator<T>* allocator;
-	// default allocate
-	sgdm::DefaultAllocator<T> def_allocator;
-	// the array pointer save the address of array
+    // default allocate
+    sgdm::DefaultAllocator<T> def_allocator;
+    // the array pointer save the address of array
     T *array;
-	// the number of element in array
+    // the number of element in array
     unsigned int elementCount;
-	// the capacity of current array
+    // the capacity of current array
     unsigned int capacity;
-	// reset the capacity of array
+    // reset the capacity of array
     void Recapacity(int capacity);
 
   public:
-	// Default Constructor
+    // Default Constructor
     DynamicArray();
-	// Constructor need load a allocator
+    // Constructor need load a allocator
     DynamicArray(sgdm::IAllocator<T>* alloc);
-	// Copy constructor
+    // Copy constructor
     DynamicArray(const DynamicArray &other);
-	// Operator overload
+    // Operator overload
     const DynamicArray& operator=(const DynamicArray &other); 
-	// Deconstructor
+    // Deconstructor
     ~DynamicArray(); 
 
-	// add element to end of collection
+    // add element to end of collection
     void push(const T & element);
-	// push to the front of the collection
+    // push to the front of the collection
     void pushFront(T element);
-	// remove and retrieves the last element
+    // remove and retrieves the last element
     T pop();
-	// remove and retrieves the first element
+    // remove and retrieves the first element
     T popFront();
 
 
-	// return the number of elements contained
+    // return the number of elements contained
     const unsigned int getLength();
-	// retrieves an element at a location
-	const T at(unsigned int index);
-	// retrieves an element, undefined behavior if out of bounds
+    // retrieves an element at a location
+    const T at(unsigned int index);
+    // retrieves an element, undefined behavior if out of bounds
     T& operator[](int);
-	// get an element, undefined behavior if out of bounds	
+    // get an element, undefined behavior if out of bounds    
     const T& operator[](int) const;
 
-	// remove the element at a location
+    // remove the element at a location
     T removeAt(unsigned int index);
-	// remove the element  from the array
-	T remove(const T& element);
-	// insert an element at a location, shift the element to next avalible place
+    // remove the element  from the array
+    T remove(const T& element);
+    // insert an element at a location, shift the element to next avalible place
     void insertAt(unsigned int index, const T& element);
-	// remove all elements in array
-	void clean();
-	// check if the array is empty
-	bool empty();
-	
+    // remove all elements in array
+    void clean();
+    // check if the array is empty
+    bool empty();
+    
 }; // end of class
 
 
@@ -77,10 +77,10 @@ class DynamicArray {
 template <class T>
 inline
 DynamicArray<T>::DynamicArray(){
-	allocator = &def_allocator;
+    allocator = &def_allocator;
     capacity = 2;
     elementCount = 0;
-	array = allocator->get(2);
+    array = allocator->get(2);
 };
 
 
@@ -93,7 +93,7 @@ DynamicArray<T>::DynamicArray(sgdm::IAllocator<T>* alloc){
     elementCount = 0;
     array = allocator->get(2);
     for (unsigned int i = 0; i < capacity; i++){
-	allocator->construct(&(array[i]));
+    allocator->construct(&(array[i]));
     }
 };
 
@@ -107,9 +107,9 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T> &other) {
     elementCount = other.elementCount;
     array = allocator->get(other.capacity);
         for (unsigned int i = 0; i < capacity; i++)
-	    allocator->construct(&(array[i]));
-	for (unsigned int i = 0; i < elementCount; i++)
-	    array[i] = other.array[i];
+        allocator->construct(&(array[i]));
+    for (unsigned int i = 0; i < elementCount; i++)
+        array[i] = other.array[i];
 };
 
 
@@ -118,19 +118,19 @@ template <class T>
 inline
 const DynamicArray<T>& DynamicArray<T>:: operator=(const DynamicArray<T> &other) {
     if (this != &other) {
-		for (unsigned int i = 0; i < elementCount; i++){
-			allocator->destruct(&array[i]);
-		}
-		allocator->release(array, capacity);
-		capacity = other.capacity;
-		allocator = other.allocator;
-		elementCount = other.elementCount;
-		array = allocator->get(other.capacity);
-		for (unsigned int i = 0; i < capacity; i++)
-			allocator->construct(&(array[i]));
-		for (unsigned int i = 0; i < elementCount; i++)
-			array[i] = other.array[i];
-	};
+        for (unsigned int i = 0; i < elementCount; i++){
+            allocator->destruct(&array[i]);
+        }
+        allocator->release(array, capacity);
+        capacity = other.capacity;
+        allocator = other.allocator;
+        elementCount = other.elementCount;
+        array = allocator->get(other.capacity);
+        for (unsigned int i = 0; i < capacity; i++)
+            allocator->construct(&(array[i]));
+        for (unsigned int i = 0; i < elementCount; i++)
+            array[i] = other.array[i];
+    };
     return *this;
 };
 
@@ -139,9 +139,9 @@ const DynamicArray<T>& DynamicArray<T>:: operator=(const DynamicArray<T> &other)
 template <class T>
 inline
 DynamicArray<T>::~DynamicArray() {
-	for (unsigned int i = 0; i < elementCount; i++){
-		allocator->destruct(&array[i]);
-	}
+    for (unsigned int i = 0; i < elementCount; i++){
+        allocator->destruct(&array[i]);
+    }
     allocator->release(array, capacity);
 };
 
@@ -150,18 +150,18 @@ DynamicArray<T>::~DynamicArray() {
 template <class T>
 inline
 void DynamicArray<T>::Recapacity(int newCapacity) {
-	assert(capacity >= elementCount);
-	T* newArray = allocator->get(newCapacity);
-	for (int i = 0; i < newCapacity; i++){
-		allocator->construct(&(newArray[i]));
-	}
-	for (unsigned int i = 0; i < elementCount; i++)
-	{
-		newArray[i] = array[i];
-	}
-	allocator->release(array, capacity);
-	capacity = newCapacity;
-	array = newArray;
+    assert(capacity >= elementCount);
+    T* newArray = allocator->get(newCapacity);
+    for (int i = 0; i < newCapacity; i++){
+        allocator->construct(&(newArray[i]));
+    }
+    for (unsigned int i = 0; i < elementCount; i++)
+    {
+        newArray[i] = array[i];
+    }
+    allocator->release(array, capacity);
+    capacity = newCapacity;
+    array = newArray;
 
 };
 
@@ -170,24 +170,24 @@ void DynamicArray<T>::Recapacity(int newCapacity) {
 template <class T>
 inline
 void DynamicArray<T>::push(const T &element) {
-	if (elementCount == capacity){
-		Recapacity(2 * capacity);
-	};
-	allocator->construct(&array[elementCount++], element);
+    if (elementCount == capacity){
+        Recapacity(2 * capacity);
+    };
+    allocator->construct(&array[elementCount++], element);
 };
 
 
 // push to the front of the collection
 template <class T>
 void DynamicArray<T>::pushFront(T element) {
-	if (elementCount == capacity){
-		Recapacity(2 * capacity);
-	};
-	elementCount++;
-	for (int i = elementCount - 1; i > 0; i--){
-		array[i] = array[i - 1];
-	};
-	allocator->construct(&array[0], element);
+    if (elementCount == capacity){
+        Recapacity(2 * capacity);
+    };
+    elementCount++;
+    for (int i = elementCount - 1; i > 0; i--){
+        array[i] = array[i - 1];
+    };
+    allocator->construct(&array[0], element);
 };
 
 
@@ -228,8 +228,8 @@ const unsigned int DynamicArray<T>::getLength(){
 template <class T>
 inline
 T& DynamicArray<T>::operator[](int index) {
-	assert((unsigned int)index < elementCount && index >= 0);
-	return array[index];
+    assert((unsigned int)index < elementCount && index >= 0);
+    return array[index];
 }
 
 
@@ -237,8 +237,8 @@ T& DynamicArray<T>::operator[](int index) {
 template <class T>
 inline
 const T& DynamicArray<T>::operator[](int index) const {
-	assert(index < elementCount && index >= 0);
-	return array[index];
+    assert(index < elementCount && index >= 0);
+    return array[index];
 }
 
 
@@ -255,23 +255,23 @@ const T DynamicArray<T>::at(unsigned int index){
 template <class T>
 inline
 T DynamicArray<T>::remove(const T& element){
-	unsigned int index = -1;
+    unsigned int index = -1;
 
-	for (unsigned int i = 0; i < elementCount; i++){
-		if (array[i] == element){
-			index = i;
-			break;
-		}
-	};
-	if (index == -1)
-		return NULL;
+    for (unsigned int i = 0; i < elementCount; i++){
+        if (array[i] == element){
+            index = i;
+            break;
+        }
+    };
+    if (index == -1)
+        return NULL;
 
-	for (unsigned int i = index; i < elementCount - 1; i++){
-		array[i] = array[i + 1];
-	};
+    for (unsigned int i = index; i < elementCount - 1; i++){
+        array[i] = array[i + 1];
+    };
 
-	elementCount--;
-	return element;
+    elementCount--;
+    return element;
 }
 
 
@@ -279,16 +279,16 @@ T DynamicArray<T>::remove(const T& element){
 template <class T>
 inline
 void DynamicArray<T>::insertAt(unsigned int index, const T& element){
-	assert(index < elementCount && index >= 0);
-	if (elementCount == capacity){
-		Recapacity(2 * capacity);
-	}
-	elementCount++;
-	for (int i = elementCount - 1; i > index; i--)
-	{
-		array[i] = array[i - 1];
-	}
-	array[index] = element;
+    assert(index < elementCount && index >= 0);
+    if (elementCount == capacity){
+        Recapacity(2 * capacity);
+    }
+    elementCount++;
+    for (int i = elementCount - 1; i > index; i--)
+    {
+        array[i] = array[i - 1];
+    }
+    array[index] = element;
 };
 
 
@@ -311,9 +311,9 @@ T DynamicArray<T>::removeAt(unsigned int index){
 template <class T>
 inline
 void DynamicArray<T>::clean(){
-	while (!this->empty()){
-		this->pop();
-	};
+    while (!this->empty()){
+        this->pop();
+    };
 };
 
 
@@ -321,9 +321,9 @@ void DynamicArray<T>::clean(){
 template <class T>
 inline
 bool DynamicArray<T>::empty(){
-	if (elementCount == 0)
-		return true;
-	return false;
+    if (elementCount == 0)
+        return true;
+    return false;
 };
 
 }; // end of namespace

@@ -4,7 +4,7 @@
 #define INCLUDED_COUNTING_ALLOCATOR
 
 # include "default_allocator.h"
-
+    
 namespace sgdm
 {
 
@@ -14,27 +14,27 @@ template<class T>
 class CountingAllocator : public DefaultAllocator<T>
 {
   public:
-	// Constructor
+    // Constructor
     CountingAllocator();
-	// Deconstructor
+    // Deconstructor
     ~CountingAllocator();
-	// Copy constructor.
+    // Copy constructor.
     CountingAllocator(const CountingAllocator &other);
-	// Operator overload
+    // Operator overload
     CountingAllocator& operator=(const CountingAllocator &other);
 
-	// Access
-	// get the number of allocate times 
+    // Access
+    // get the number of allocate times 
     const int getAllocationCount();
-	// get the number of release times
+    // get the number of release times
     const int getReleaseCount();
-	// get the number of allocate times substract release times
+    // get the number of allocate times substract release times
     const int getOutstandingCount();
-	// get the total number of memory blocks has been allocate 
+    // get the total number of memory blocks has been allocate 
     int getTotalAllocationCount();
-	// get the total number of memory blocks has been released
+    // get the total number of memory blocks has been released
     int getTotalReleaseCount();
-	// the total number of memory blocks still been allocated
+    // the total number of memory blocks still been allocated
     int getTotalOutstandingCount();
 
 }; // end of class
