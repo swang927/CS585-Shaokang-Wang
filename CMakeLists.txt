@@ -10,8 +10,20 @@ project (Shaokang_game)
 set(EXECUTABLE_NAME "Shaokang_game")
 add_executable(${EXECUTABLE_NAME} game.m.cpp)
 
+
+# sfml
+# ========================================================================= #
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/SFML-2.3.2/share/SFML/cmake/Modules")
+message (STATUS ${CMAKE_MODULE_PATH}) 
+#Find any version 2.X of SFML
+find_package(SFML 2 REQUIRED system window graphics network audio)
+if(SFML_FOUND)
+  include_directories(${SFML_INCLUDE_DIR})
+  target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
+endif()
+# ========================================================================= #
+
 
 #setup subdirectory
 add_subdirectory (test)
@@ -26,15 +38,8 @@ target_link_libraries (${EXECUTABLE_NAME} Memory)
 target_link_libraries (${EXECUTABLE_NAME} Rendering)
 target_link_libraries (${EXECUTABLE_NAME} Scene)
 
-
-#Find any version 2.X of SFML
-find_package(SFML 2 REQUIRED system window graphics network audio)
-if(SFML_FOUND)
-  include_directories(${SFML_INCLUDE_DIR})
-  target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
-endif()
-
-
+# pictures load
+# ======================================================== #
 # we don't want to copy if we're building in the source dir
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     # list of files for which we add a copy rule
@@ -49,6 +54,8 @@ if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
         )
     endforeach()
 endif()
+# ======================================================== #
+
 
 # files are only copied if a target depends on them
 add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/player.png")
