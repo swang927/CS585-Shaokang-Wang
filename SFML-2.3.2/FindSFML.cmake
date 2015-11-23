@@ -73,10 +73,13 @@ set(FIND_SFML_PATHS
     /opt/csw
     /opt)
 
+	
+message (STATUS "sfml check:  -----  "${SFML_ROOT}) 
 # find the SFML include directory
 find_path(SFML_INCLUDE_DIR SFML/Config.hpp
           PATH_SUFFIXES include
           PATHS ${FIND_SFML_PATHS})
+
 
 # check the version number
 set(SFML_VERSION_OK TRUE)
@@ -96,15 +99,12 @@ if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
         set(SFML_VERSION_PATCH 0)
     endif()
     math(EXPR SFML_REQUESTED_VERSION "${SFML_FIND_VERSION_MAJOR} * 10000 + ${SFML_FIND_VERSION_MINOR} * 100 + ${SFML_FIND_VERSION_PATCH}")
-	
-	message (STATUS ${SFML_VERSION_MAJOR}) 
-    message (STATUS ${SFML_VERSION_MINOR})
-	message (STATUS ${SFML_VERSION_PATCH}) 
+
     # if we could extract them, compare with the requested version number
     if (SFML_VERSION_MAJOR)
         # transform version numbers to an integer
-        math(EXPR SFML_VERSION "2 * 10000 + 1 * 100 + 0")
-		 
+        math(EXPR SFML_VERSION "${SFML_VERSION_MAJOR} * 10000 + ${SFML_VERSION_MINOR} * 100 + ${SFML_VERSION_PATCH}")
+		
         # compare them
         if(SFML_VERSION LESS SFML_REQUESTED_VERSION)
             set(SFML_VERSION_OK FALSE)
