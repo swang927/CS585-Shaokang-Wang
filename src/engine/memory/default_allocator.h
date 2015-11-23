@@ -1,7 +1,6 @@
 ﻿// default_allocator.h
 
 
-
 #ifndef INCLUDED_DEFAULT_ALLOCATOR
 
 #define INCLUDED_DEFAULT_ALLOCATOR

@@ -3,7 +3,6 @@
 #ifndef INCLUDED_JSON_ENTITY
 #define INCLUDED_JSON_ENTITY
 
-
 #include <string>
 #include <algorithm>
 #include "../containers/dynamic_array.h"
@@ -11,6 +10,7 @@
 
 namespace sgdd
 {
+// An aggregate type capable of storing various primitive, object, and array data describing json. 
 class JsonEntity{
   private:
     // define map as JsonObject to save object entity
