@@ -74,7 +74,7 @@ set(FIND_SFML_PATHS
     /opt)
 
 	
-message (STATUS "sfml check:  -----  "${SFML_ROOT}) 
+message (STATUS ${SFML_ROOT}) 
 # find the SFML include directory
 find_path(SFML_INCLUDE_DIR SFML/Config.hpp
           PATH_SUFFIXES include
