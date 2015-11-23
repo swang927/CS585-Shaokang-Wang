@@ -19,7 +19,6 @@ install:
   - export CXX="g++-4.8"
   # sfml
   - wget http://www.sfml-dev.org/download/sfml/2.1/SFML-2.1-linux-gcc-64bits.tar.bz2
-  #- wget http://www.sfml-dev.org/files/SFML-2.1-linux-gcc-32bits.tar.bz2
   - tar xf SFML-2.1-linux-gcc-64bits.tar.bz2
   - sudo cp -r SFML-2.1/include/* /usr/local/include/.
   - sudo cp -r SFML-2.1/lib/* /usr/local/lib/.
