@@ -50,7 +50,7 @@ struct JsonParser{
                 true    ||    false    ||    null
     */
     void foldstring(std::string& txt);
-};
+}; // end of class
 
 
 // CONSTRUCTORS
@@ -333,6 +333,6 @@ bool JsonParser::isNumber(std::string txt){
 };
 
 
-};
+}; // end of name space
 
 #endif

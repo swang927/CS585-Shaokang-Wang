@@ -116,8 +116,8 @@ class JsonEntity{
     JsonEntity get(std::string key);
     // getting array elements as an entity.
     JsonEntity at(unsigned int index);
-};
 
+}; // end of class
 
 
 // CONSTRUCTORS
@@ -329,6 +329,6 @@ JsonEntity JsonEntity::at(unsigned int index){
     return j_Array[index];
 }
 
-};
+}; // end of name space
     
 #endif
