@@ -222,7 +222,7 @@ T& Map<T>::operator[](const std::string& key){
                 }
             }
         }
-        // create the 
+        // create the default value
         T* default_value = allocator->get(1);
         allocator->construct(default_value);
         // insert node
