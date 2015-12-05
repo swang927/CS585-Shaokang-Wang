@@ -91,15 +91,15 @@ void EventDispatcher::add(const std::string& type, EventListenerCallbacksPtr lis
 
 // remove the event listener for certain type of event
 inline
-void EventDispatcher::remove(const std::string& eventName, EventListenerCallbacksPtr listener)
+void EventDispatcher::remove(const std::string& type, EventListenerCallbacksPtr listener)
 {
 	assert(listener);
-	assert(d_listeners.has(eventName));
-	unsigned int size = d_listeners[eventName].getLength();
+	assert(d_listeners.has(type));
+	unsigned int size = d_listeners[type].getLength();
 	for (unsigned int i = 0; i < size; ++i)
 	{
-		if (d_listeners[eventName][i] == listener){
-			d_listeners[eventName].removeAt(i);
+		if (d_listeners[type][i] == listener){
+			d_listeners[type].removeAt(i);
 		}
 	}
 }

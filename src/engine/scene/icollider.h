@@ -11,11 +11,13 @@ namespace sgds
 class ICollider {
   public:
     // We could replace this to abstract away
-    virtual const RectangleBounds& bounds() const;  
-    virtual unsigned short shortflags() const;
-    virtual void setFlags(unsigned short flags);
-    virtual bool canCollide(unsigned short flags) const;
-    virtual bool doesCollide(const RectangleBounds& candidate);
+    virtual const RectangleBounds& bounds() const = 0 ;  
+    virtual unsigned short shortflags() const = 0;
+    virtual void setFlags(unsigned short flags) = 0;
+    virtual bool canCollide(unsigned short flags) const = 0;
+    virtual bool doesCollide(const RectangleBounds& candidate) = 0;
+	virtual int getCell() = 0;
+	virtual void setCell(int index) = 0;
 };
 
 

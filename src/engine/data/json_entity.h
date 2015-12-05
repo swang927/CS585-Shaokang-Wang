@@ -184,6 +184,7 @@ JsonEntity& JsonEntity::operator = (const JsonEntity &other){
 // DESTRUCTOR
 inline
 JsonEntity::~JsonEntity(){
+	
 }
 
 

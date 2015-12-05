@@ -30,6 +30,8 @@ class RectangleBounds {
     // OPERATOR OVERLOADS
     RectangleBounds& operator = (const RectangleBounds &other);
 
+	// NOT EQUAL OPERATOR OVERLOADS
+	bool operator != ( RectangleBounds &other);
 
     // Getter
 	// left corner position x 
@@ -99,6 +101,17 @@ RectangleBounds& RectangleBounds::operator = (const RectangleBounds &other){
 }
 
 
+// NOT EQUAL OPERATOR OVERLOADS
+inline
+bool RectangleBounds::operator != (RectangleBounds &other){
+	if (this->_x == other._x
+		&& this->_y == other._y
+		&& this->_width == other._width
+		&& this->_height == other._height)
+		return false;
+	else
+		return true;
+}
 // Getter
 // get left corner position x 
 inline

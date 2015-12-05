@@ -38,22 +38,39 @@ class NxNSceneGraph : public ITickable {
     int _n;
 	// the cell list  
     sgdc::DynamicArray<Cell*> nxn_cells;
-	// base on the bound get the cell involved
-    Cell* getCell(RectangleBounds bound);
-    
+	// a collection of target IColliders
+	sgdc::DynamicArray<ICollider*> collection;
 
   public:
 	// Constructor
+	NxNSceneGraph();
     // get the dimensions which provided the width/height, and divisions 
 	// provided the number of cells per column/row
     NxNSceneGraph(float dimensions, int divisions);
 	// get the width, height of window, and divisions 
 	// provided the number of cells per column/row
     NxNSceneGraph(float width, float height, int divisions);
+	// Operator overload
+	const NxNSceneGraph& operator=(const NxNSceneGraph &other);
+	// Deconstructor
+	~NxNSceneGraph();
+
+	// Accessor
+	// base on the bound get the cell involved
+	Cell* getCell(RectangleBounds bound);
+	// base on the bound get the involved cell's index
+	int getCellindex(RectangleBounds bound);
+
+	// Editor
 	// add new onject 
     void addCollider(ICollider* collider);
+	// add new onject to certain cell
+	void addCollider(ICollider* collider, int index);
 	// remove an exist object
     void removeCollider(ICollider* collider);
+	// remove an exist object from certain cell
+	void removeCollider(ICollider* collider, int index);
+
     
     // finder
 	// retrieve all the collider objects in the rectangel area definde by left corner and size
@@ -65,7 +82,9 @@ class NxNSceneGraph : public ITickable {
 	// retrieve all the collider objects in the rectangel area definde by bound and flags
     sgdc::DynamicArray<ICollider*> find(const RectangleBounds& bounds, unsigned short flags);
     // Do not return self
-    sgdc::DynamicArray<ICollider*> find(const ICollider* collider); 
+    sgdc::DynamicArray<ICollider*> find(const ICollider* collider);
+	// retrieve all the collider objects in the cell and its neighbor cells
+	sgdc::DynamicArray<ICollider*> find_around(const ICollider* collider);
     
     // implement ITickable
 	// pre-process
@@ -77,7 +96,10 @@ class NxNSceneGraph : public ITickable {
 
 };
 
-// constructor
+// Constructor
+inline
+NxNSceneGraph::NxNSceneGraph(){
+}
 // get the dimensions which provided the width/height, and divisions 
 // provided the number of cells per column/row
 inline
@@ -88,7 +110,7 @@ NxNSceneGraph::NxNSceneGraph(float dimensions, int divisions){
     this->w_height = 1;
     this->c_width = this->w_width / this->_n;
     this->c_height = this->w_height / this->_n;
-    for (unsigned int i = 0; i < _n*_n; i++){
+    for (int i = 0; i < _n*_n; i++){
         float x = (i % _n)*c_width;
         float y = (i / _n)*c_height;
         Cell* cell =new Cell;
@@ -110,7 +132,7 @@ NxNSceneGraph::NxNSceneGraph(float width, float height, int divisions){
     this->w_height = height;
     this->c_width = this->w_width/ this->_n;
     this->c_height = this->w_height / this->_n;
-    for (unsigned int i = 0; i < _n*_n; i++){
+    for (int i = 0; i < _n*_n; i++){
         float x = (i % _n)*c_width;
         float y = (i / _n)*c_height;
         Cell* cell =new Cell;
@@ -121,10 +143,38 @@ NxNSceneGraph::NxNSceneGraph(float width, float height, int divisions){
 };
 
 
+// Operator overload
+inline
+const NxNSceneGraph& NxNSceneGraph::operator=(const NxNSceneGraph &other){
+	if (this != &other){
+		this->_dimensions = other._dimensions;
+		this->_n = other._n;
+		this->w_width = other.w_width;
+		this->w_height = other.w_height;
+		this->c_width = this->w_width / this->_n;
+		this->c_height = this->w_height / this->_n;
+		for (int i = 0; i < _n*_n; i++){
+			float x = (i % _n)*c_width;
+			float y = (i / _n)*c_height;
+			Cell* cell = new Cell;
+			cell->bound.setDimesions(c_width, c_height);
+			cell->bound.setPosition(x, y);
+			nxn_cells.push(cell);
+		}
+	}
+	return *this;
+}
+
+// Deconstructor
+inline
+NxNSceneGraph::~NxNSceneGraph(){
+}
+
+
 // base on the bound get the cell involved
 inline
 Cell* NxNSceneGraph::getCell(RectangleBounds bound){
-    for (unsigned int i = 0; i < _n*_n; i++){
+    for (int i = 0; i < _n*_n; i++){
         if (nxn_cells[i]->bound.doesCollide(bound))
             return nxn_cells[i];
     }
@@ -132,13 +182,33 @@ Cell* NxNSceneGraph::getCell(RectangleBounds bound){
     return NULL;
 };
 
+// base on the bound get the involved cell's index
+inline
+int NxNSceneGraph::getCellindex(RectangleBounds bound){
+	for (int i = 0; i < _n*_n; i++){
+		if (nxn_cells[i]->bound.doesCollide(bound))
+			return i;
+	}
+	// if no collided rectangle return first cell
+	return -1;
+};
 
 // add new onject
 inline
 void NxNSceneGraph::addCollider(ICollider* collider){
     RectangleBounds bound = collider->bounds();
-    if (getCell(bound))
-      getCell(bound)->objects.push(collider);
+	int i = getCellindex(bound);
+	if (i>= 0){
+		nxn_cells[i]->objects.push(collider);
+		collider->setCell(i);
+	}
+};
+
+// add new onject to certain cell
+inline
+void NxNSceneGraph::addCollider(ICollider* collider, int index){
+	nxn_cells[index]->objects.push(collider);
+	collider->setCell(index);
 };
 
 
@@ -146,28 +216,32 @@ void NxNSceneGraph::addCollider(ICollider* collider){
 inline
 void NxNSceneGraph::removeCollider(ICollider* collider){
     RectangleBounds bound = collider->bounds();
-    if (getCell(bound))
-        getCell(bound)->objects.remove(collider);
+	int i = getCellindex(bound);
+	if (i >= 0){
+		nxn_cells[i]->objects.remove(collider);
+		collider->setCell(-1);
+	}
 };
 
-
+// remove an exist object from certain cell
+inline
+void NxNSceneGraph::removeCollider(ICollider* collider, int index){
+	nxn_cells[index]->objects.remove(collider);
+	collider->setCell(-1);
+};
 
 // finder
 // retrieve all the collider objects in the rectangel area definde by left corner and size
 inline
 sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(float x, float y, float width, float height){
     sgds::RectangleBounds bound(x, y, width, height);
-    sgdc::DynamicArray<ICollider*> collection = *(new sgdc::DynamicArray <ICollider*>) ;
-    for (unsigned int i = 0; i < _n*_n; i++)
-    {
-        if (nxn_cells[i]->bound.doesCollide(bound))
-        {
-            for (int j = 0; j < nxn_cells[i]->objects.getLength(); j++)
-            {
-                collection.push(nxn_cells[i]->objects[j]);
-            }
-        }
-    }
+    collection.clean();
+	Cell* position = getCell(bound);
+	if (position){
+		for (unsigned int j = 0; j < position->objects.getLength(); j++){
+			collection.push(position->objects[j]);
+		}
+	}
     return collection;
 };
 
@@ -176,64 +250,53 @@ sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(float x, float y, float width
 inline
 sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(float x, float y, float width, float height, unsigned short flags){
     sgds::RectangleBounds bound(x, y, width, height);
-    sgdc::DynamicArray<ICollider*> collection = *(new sgdc::DynamicArray <ICollider*>);
-    for (unsigned int i = 0; i < _n*_n; i++)
-    {
-        if (nxn_cells[i]->bound.doesCollide(bound))
-        {
-            for (int j = 0; j < nxn_cells[i]->objects.getLength(); j++)
-            {
-                collection.push(nxn_cells[i]->objects[j]);
-            }
-        }
-    }
+	collection.clean();
+	Cell* position = getCell(bound);
+	if (position && flags){
+		for (unsigned int j = 0; j < position->objects.getLength(); j++){
+			collection.push(position->objects[j]);
+		}
+	}
     return collection;
 };
 
 
 // retrieve all the collider objects in the rectangel area definde by bound
 inline
-sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(const RectangleBounds& bounds){
-    sgdc::DynamicArray<ICollider*> collection = *(new sgdc::DynamicArray <ICollider*>);
-    for (unsigned int i = 0; i < _n*_n; i++)
-    {
-        if (nxn_cells[i]->bound.doesCollide(bounds))
-        {
-            for (int j = 0; j < nxn_cells[i]->objects.getLength(); j++)
-            {
-                collection.push(nxn_cells[i]->objects[j]);
-            }
-        }
-    }
-    return collection;
+sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(const RectangleBounds& bound){
+	collection.clean();
+	Cell* position = getCell(bound);
+	if (position){
+		for (unsigned int j = 0; j < position->objects.getLength(); j++){
+				collection.push(position->objects[j]);
+		}
+	}
+	return collection;
 };
 
 
 // retrieve all the collider objects in the rectangel area definde by bound and flags
 inline
-sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(const RectangleBounds& bounds, unsigned short flags){
-    sgdc::DynamicArray<ICollider*> collection = *(new sgdc::DynamicArray <ICollider*>);
-    for (unsigned int i = 0; i < _n*_n; i++)
-    {
-        if (nxn_cells[i]->bound.doesCollide(bounds))
-        {
-            for (int j = 0; j < nxn_cells[i]->objects.getLength(); j++)
-            {
-                collection.push(nxn_cells[i]->objects[j]);
-            }
-        }
-    }
-    return collection;
+sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(const RectangleBounds& bound, unsigned short flags){
+	collection.clean();
+	Cell* position = getCell(bound);
+	if (position && flags){
+		for (unsigned int j = 0; j < position->objects.getLength(); j++){
+			collection.push(position->objects[j]);
+		}
+	}
+	return collection;
 };
+
 
 // Do not return self
 inline
 sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(const ICollider* collider){
-    sgdc::DynamicArray<ICollider*> collection = *(new sgdc::DynamicArray <ICollider*>);
+    collection.clean();
     RectangleBounds bound = collider->bounds();
     Cell* position = getCell(bound);
     if (position){
-        for (int j = 0; j < position->objects.getLength(); j++){
+        for (unsigned int j = 0; j < position->objects.getLength(); j++){
             if (position->objects[j] != collider){
                 collection.push(position->objects[j]);
             }
@@ -242,7 +305,80 @@ sgdc::DynamicArray<ICollider*> NxNSceneGraph::find(const ICollider* collider){
     return collection;
 };
 
-
+// retrieve all the collider objects in the cell and its neighbor cells
+inline
+sgdc::DynamicArray<ICollider*> NxNSceneGraph::find_around(const ICollider* collider){
+	collection.clean();
+	RectangleBounds bound = collider->bounds();
+	// template position
+	int t_position = -1;
+	// current cell index
+	int position = getCellindex(bound);
+	if (position >= 0){
+		// check its own cell
+		for (unsigned int j = 0; j < nxn_cells[position]->objects.getLength(); j++){
+			if (nxn_cells[position]->objects[j] != collider)
+				collection.push(nxn_cells[position]->objects[j]);
+		}
+		// check the top left cell
+		if ((position-_n-1) >= 0){
+			t_position = position-_n-1;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the top cell
+		if ((position-_n) >= 0){
+			t_position = position - _n;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the top right cell
+		if ((position-_n+1) >= 0){
+			t_position = position - _n + 1;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the  left cell
+		if ((position-1) >= 0){
+			t_position = position - 1;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the right cell
+		if ((position+1) < _n*_n){
+			t_position = position + 1;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the bottom left cell
+		if ((position + _n - 1)  < _n*_n){
+			t_position = position + _n - 1;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the bottom cell
+		if ((position + _n)  < _n*_n){
+			t_position = position + _n;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+		// check the bottom right cell
+		if ((position + _n + 1)  < _n*_n){
+			t_position = position + _n + 1;
+			for (unsigned int j = 0; j < nxn_cells[t_position]->objects.getLength(); j++){
+				collection.push(nxn_cells[t_position]->objects[j]);
+			}
+		}
+	}
+	return collection;
+};
 
 // implement ITickable
 // pre-process

@@ -106,7 +106,7 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T> &other) {
     allocator = other.allocator;
     elementCount = other.elementCount;
     array = allocator->get(other.capacity);
-        for (unsigned int i = 0; i < capacity; i++)
+	for (unsigned int i = 0; i < elementCount; i++)
         allocator->construct(&(array[i]));
     for (unsigned int i = 0; i < elementCount; i++)
         array[i] = other.array[i];
@@ -118,15 +118,14 @@ template <class T>
 inline
 const DynamicArray<T>& DynamicArray<T>:: operator=(const DynamicArray<T> &other) {
     if (this != &other) {
-        for (unsigned int i = 0; i < elementCount; i++){
-            allocator->destruct(&array[i]);
+        for (unsigned int i = 0; i < this->elementCount; i++){
+            this->allocator->destruct(&array[i]);
         }
-        allocator->release(array, capacity);
-        capacity = other.capacity;
-        allocator = other.allocator;
-        elementCount = other.elementCount;
+        this->allocator->release(array, capacity);
+        this->capacity = other.capacity;
+        this->elementCount = other.elementCount;
         array = allocator->get(other.capacity);
-        for (unsigned int i = 0; i < capacity; i++)
+		for (unsigned int i = 0; i < elementCount; i++)
             allocator->construct(&(array[i]));
         for (unsigned int i = 0; i < elementCount; i++)
             array[i] = other.array[i];

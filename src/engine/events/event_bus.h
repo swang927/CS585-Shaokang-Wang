@@ -13,11 +13,11 @@ class EventBus : public sgds::ITickable
 	  unsigned int d_queueSize = 1000;
 	  EventDispatcher d_evDispatcher;
 	  sgdc::DynamicArray<const IEvent*> d_eventQueue;
-
+	  static EventBus *event_instance;
 
   public:
 	//ACCESSORS
-	static EventBus& inst();
+	static EventBus* inst();
 	// MUTATORS
 	void setQueueSize(unsigned int size);
 
@@ -42,9 +42,10 @@ class EventBus : public sgds::ITickable
 
 //ACCESSORS
 inline
-EventBus& EventBus::inst(){
-	static EventBus inst;
-	return inst;
+EventBus* EventBus::inst(){
+	if (!event_instance)
+		event_instance = new EventBus();
+	return event_instance;
 }
 
 

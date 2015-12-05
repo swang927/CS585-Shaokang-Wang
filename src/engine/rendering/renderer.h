@@ -55,6 +55,8 @@ class Renderer{
     sf::Texture& getTexture(const std::string & name);
     // Returns false once the window is ready to be destroyed
     bool isActive(); 
+	// get window
+	sf::RenderWindow *window();
 
 };
 
@@ -73,10 +75,7 @@ Renderer::Renderer(std::string title, int width, int height)
 inline
 Renderer::~Renderer()
 {
-    for (int i = d_sprites.getLength() - 1; i >= 0; ++i)
-    {
-        d_sprites.pop();
-    }
+    d_sprites.clean();
     if (d_window.isOpen())
     {
         d_window.close();
@@ -179,7 +178,14 @@ int Renderer::window_height(){
 // close the current window
 inline
 void Renderer::closewindow(){
-    d_window.close();
+	d_window.close();
+}
+
+
+// get window
+inline
+sf::RenderWindow * Renderer::window(){
+	return &(this->d_window);
 }
 
 };
