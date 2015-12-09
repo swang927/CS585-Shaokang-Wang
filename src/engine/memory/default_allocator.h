@@ -2,7 +2,7 @@
 
 #ifndef INCLUDED_DEFAULT_ALLOCATOR
 #define INCLUDED_DEFAULT_ALLOCATOR
-
+    
 #include "iallocator.h"
 
 namespace sgdm
@@ -12,45 +12,45 @@ template<class T>
 class DefaultAllocator : public IAllocator<T> 
 {
   protected:
-	// total memory unit allocated by this allocator
+    // total memory unit allocated by this allocator
     unsigned int totalAllocationCount;
-	// total memory unit released by this allocator
+    // total memory unit released by this allocator
     unsigned int totalReleaseCount;
-	// number of allocations that occurred
+    // number of allocations that occurred
     unsigned int allocationCount;
-	// number of releases that occurred
+    // number of releases that occurred
     unsigned int releaseCount;
 
 
   public:
-	// Constructor
+    // Constructor
     DefaultAllocator();
-	// Deconstructor
+    // Deconstructor
     ~DefaultAllocator();
-	// Copy constructor.
+    // Copy constructor.
     DefaultAllocator(const DefaultAllocator &other);
-	// Operator overload
+    // Operator overload
     DefaultAllocator& operator=(const DefaultAllocator &other);
 
-	// get current memory unit still active and allocated by this allocator
+    // get current memory unit still active and allocated by this allocator
     int get_count(){ return totalAllocationCount - totalReleaseCount; };
 
-	// Implement the iallocator menber functions
-	// allocate the certain times of corresponding type memory and return the address
+    // Implement the iallocator menber functions
+    // allocate the certain times of corresponding type memory and return the address
     T* get(int count);
-	// free the memory start from the pointed address with certain size 
+    // free the memory start from the pointed address with certain size 
     void release(T* target_memory, int count);
-	// free the memory start from the pointed address
+    // free the memory start from the pointed address
     void release(T* target_memory);
 
-	// copy construct the object as default in the ceratin address 
+    // copy construct the object as default in the ceratin address 
     void construct(T* pointer, const T& copy);
-	// construct the object as default in the ceratin address
+    // construct the object as default in the ceratin address
     void construct(T* pointer);
-	// destruct the oject as default in the ceratin address
+    // destruct the oject as default in the ceratin address
     void destruct(T* pointer);
 
-	// construct the object with corresponding arguments in the ceratin address
+    // construct the object with corresponding arguments in the ceratin address
     template<class U, class... Args>
     void construct(U* pointer, Args&&... args);
 
@@ -81,7 +81,7 @@ inline
 DefaultAllocator<T>::DefaultAllocator(DefaultAllocator const& other){
     totalAllocationCount = other.totalAllocationCount;
     totalReleaseCount = other.totalReleaseCount;
-	allocationCount = other.allocationCount;
+    allocationCount = other.allocationCount;
     releaseCount = other.releaseCount;
 };
 
@@ -111,11 +111,11 @@ T* DefaultAllocator<T>::get(int count){
 template<class T>
 inline
 void DefaultAllocator<T>::release(T* target_memory, int count){
-	if (target_memory != NULL){
-		totalReleaseCount += count;
-		releaseCount += 1;
-		::operator delete((void*)target_memory);
-	}
+    if (target_memory != NULL){
+        totalReleaseCount += count;
+        releaseCount += 1;
+        ::operator delete((void*)target_memory);
+    }
 };
 
 
@@ -123,7 +123,7 @@ void DefaultAllocator<T>::release(T* target_memory, int count){
 template<class T>
 inline
 void DefaultAllocator<T>::release(T* target_memory){
-	::operator delete((void*)target_memory);
+    ::operator delete((void*)target_memory);
 };
 
 
@@ -132,28 +132,28 @@ template<class T>
 template< class U, class... Args >
 inline
 void DefaultAllocator<T>::construct(U* p, Args&&... args){
-	::new((void *)p) U(std::forward<Args>(args)...);
+    ::new((void *)p) U(std::forward<Args>(args)...);
 };
 
 
 // copy construct the object as default in the ceratin address
 template<class T>
 void DefaultAllocator<T>::construct(T* pointer, const T& copy){
-	new((void *)pointer) T(copy);
+    new((void *)pointer) T(copy);
 };
 
 
 // construct the object as default in the ceratin address
 template<class T>
 void DefaultAllocator<T>::construct(T* pointer){
-	new((void *)pointer) T();
+    new((void *)pointer) T();
 };
 
 
 // destruct the oject as default in the ceratin address
 template<class T>
 void DefaultAllocator<T>::destruct(T* pointer){
-	pointer->~T();
+    pointer->~T();
 };
 
 }; // end of name space

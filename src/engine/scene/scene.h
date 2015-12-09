@@ -1,5 +1,5 @@
 // scene.h
-    
+               
 #ifndef INCLUDED_SCENE
 #define INCLUDED_SCENE
 
@@ -15,7 +15,7 @@ class Scene{
   private:
     // for tickable iterations.
     sgdc::DynamicArray<ITickable*> d_tickables;
-	// for renderer 
+    // for renderer 
     sgdr::Renderer* d_renderer;
 
     // CONSTRUCTORS

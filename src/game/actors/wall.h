@@ -1,38 +1,33 @@
-// player.h
+// wall.h
     
-#ifndef INCLUDED_PLAYER
-#define INCLUDED_PLAYER
+#ifndef INCLUDED_WALL
+#define INCLUDED_WALL
 
 #include "IActor.h"
 
 namespace sgda
 {
-// class to save the data of player
-class Player : public sgda::IActor{
-  private:
-    bool off;
-
+// class to save the data of weapon
+class Wall : public sgda::IActor{
   public:
+    // save the moving vector
     sgdr::RenderableSprite d_sprite;
     sgds::RectangleBounds d_bound;
     int ownerCell;
+
     // constructor
-    Player();
+    Wall();
     // deconstructor
-    ~Player();
+    ~Wall();
     // Copy constructor.
-    Player(const Player &other);
+    Wall(const Wall &other);
     // OPERATOR OVERLOADS
-    Player& operator = (const Player &other);
+    Wall& operator = (const Wall &other);
+
 
     //updata the bound
     void updata();
-    // set player off
-    void setOff();
-    // set player on
-    void setOn();
-    // check player is off
-    bool isOff();
+
 
     // ICollider menber function
     // get the boundary
@@ -47,43 +42,39 @@ class Player : public sgda::IActor{
     // no need so far
     unsigned short shortflags() const { return 1; };
     void setFlags(unsigned short flags) {};
-    bool canCollide(unsigned short flags) const { return true; };
+    bool canCollide(unsigned short flags) const { return true;  };
 };
+
 
 // constructor
 inline
-Player::Player(){
+Wall::Wall(){
     d_bound.setX(d_sprite.getPositionX());
     d_bound.setY(d_sprite.getPositionY());
     d_bound.setWidth(32);
     d_bound.setHeight(32);
-    off = false;
 }
 
 // deconstructor
 inline
-Player::~Player(){
+Wall::~Wall(){
 }
 
 // Copy constructor.
 inline
-Player::Player(const Player &other){
+Wall::Wall(const Wall &other){
     if (this != &other) {
         this->d_sprite = other.d_sprite;
         this->d_bound = other.d_bound;
-        this->ownerCell = other.ownerCell;
-        this->off = other.off;
     };
 }
 
 // OPERATOR OVERLOADS
 inline
-Player& Player::operator = (const Player &other){
+Wall& Wall::operator = (const Wall &other){
     if (this != &other) {
         this->d_sprite = other.d_sprite;
         this->d_bound = other.d_bound;
-        this->ownerCell = other.ownerCell;
-        this->off = other.off;
     };
     return *this;
 }
@@ -91,54 +82,33 @@ Player& Player::operator = (const Player &other){
 
 // update the bound
 inline
-void Player::updata(){
+void Wall::updata(){
     d_bound.setX(d_sprite.getPositionX());
     d_bound.setY(d_sprite.getPositionY());
     d_bound.setWidth(32);
     d_bound.setHeight(32);
 }
 
-
-
-// set player off
-inline
-void Player::setOff(){
-    this->off = true;
-}
-
-// set player off
-inline
-void Player::setOn(){
-    this->off = false;
-}
-
-// check player is off or not
-inline
-bool Player::isOff(){
-    return this->off;
-}
-
-
 // get the boundary
 inline
-const sgds::RectangleBounds& Player::bounds() const{
+const sgds::RectangleBounds& Wall::bounds() const{
     return d_bound;
 }
 
 // check the collide
 inline
-bool Player::doesCollide(const sgds::RectangleBounds& candidate){
+bool Wall::doesCollide(const sgds::RectangleBounds& candidate){
     return d_bound.doesCollide(candidate);
 };
 
 // return the cell the sprite belong to
 inline
-int Player::getCell(){
+int Wall::getCell(){
     return ownerCell;
 }
 // set the cell the sprite belong to
 inline
-void Player::setCell(int index){
+void Wall::setCell(int index){
     ownerCell = index;
 }
 

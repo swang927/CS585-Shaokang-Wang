@@ -2,7 +2,7 @@
     
 #ifndef INCLUDED_MAP
 #define INCLUDED_MAP
-
+    
 #include "../memory/counting_allocator.h"
 #include "../memory/default_allocator.h"
 #include "../memory/iallocator.h"

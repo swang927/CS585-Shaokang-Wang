@@ -1,8 +1,8 @@
 // renderable_sprite.h
-    
+     
 #ifndef INCLUDED_RENDERABLE_SPRITE
 #define INCLUDED_RENDERABLE_SPRITE
-
+    
 #include <SFML/Graphics.hpp>
 
 namespace sgdr

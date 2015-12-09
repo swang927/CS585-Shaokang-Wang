@@ -1,37 +1,45 @@
-// player.h
-    
-#ifndef INCLUDED_PLAYER
-#define INCLUDED_PLAYER
+// guard.h
+        
+#ifndef INCLUDED_GUARD
+#define INCLUDED_GUARD
 
 #include "IActor.h"
 
 namespace sgda
 {
-// class to save the data of player
-class Player : public sgda::IActor{
+// class to save the data of weapon
+class Guard : public sgda::IActor{
   private:
     bool off;
 
   public:
+    enum Direct { Down, Left, Right, Up };
+    // save the moving vector
+    float speed;
+    float dirction_x;
+    float dirction_y;
     sgdr::RenderableSprite d_sprite;
     sgds::RectangleBounds d_bound;
     int ownerCell;
+
     // constructor
-    Player();
+    Guard();
     // deconstructor
-    ~Player();
+    ~Guard();    
     // Copy constructor.
-    Player(const Player &other);
+    Guard(const Guard &other);
     // OPERATOR OVERLOADS
-    Player& operator = (const Player &other);
+    Guard& operator = (const Guard &other);
 
     //updata the bound
     void updata();
-    // set player off
+    // get the direction
+    int direction();
+    // set guard off
     void setOff();
-    // set player on
+    // set guard on
     void setOn();
-    // check player is off
+    // check guard is off or not
     bool isOff();
 
     // ICollider menber function
@@ -50,40 +58,42 @@ class Player : public sgda::IActor{
     bool canCollide(unsigned short flags) const { return true; };
 };
 
+
 // constructor
 inline
-Player::Player(){
+Guard::Guard(){
     d_bound.setX(d_sprite.getPositionX());
     d_bound.setY(d_sprite.getPositionY());
     d_bound.setWidth(32);
     d_bound.setHeight(32);
-    off = false;
 }
 
 // deconstructor
 inline
-Player::~Player(){
+Guard::~Guard(){
 }
 
 // Copy constructor.
 inline
-Player::Player(const Player &other){
+Guard::Guard(const Guard &other){
     if (this != &other) {
+        this->speed = other.speed;
+        this->dirction_x = other.dirction_x;
+        this->dirction_y = other.dirction_y;
         this->d_sprite = other.d_sprite;
         this->d_bound = other.d_bound;
-        this->ownerCell = other.ownerCell;
-        this->off = other.off;
     };
 }
 
 // OPERATOR OVERLOADS
 inline
-Player& Player::operator = (const Player &other){
+Guard& Guard::operator = (const Guard &other){
     if (this != &other) {
+        this->speed = other.speed;
+        this->dirction_x = other.dirction_x;
+        this->dirction_y = other.dirction_y;
         this->d_sprite = other.d_sprite;
         this->d_bound = other.d_bound;
-        this->ownerCell = other.ownerCell;
-        this->off = other.off;
     };
     return *this;
 }
@@ -91,7 +101,7 @@ Player& Player::operator = (const Player &other){
 
 // update the bound
 inline
-void Player::updata(){
+void Guard::updata(){
     d_bound.setX(d_sprite.getPositionX());
     d_bound.setY(d_sprite.getPositionY());
     d_bound.setWidth(32);
@@ -99,46 +109,63 @@ void Player::updata(){
 }
 
 
-
-// set player off
+// get the direction
 inline
-void Player::setOff(){
+int Guard::direction(){
+    if (dirction_y < 0)
+        return Up;
+    if (dirction_y > 0)
+        return Down;
+    if (dirction_x < 0)
+        return Left;
+    if (dirction_x > 0)
+        return Right;
+    return Down;
+}
+
+
+// set guard off
+inline
+void Guard::setOff(){
     this->off = true;
 }
 
-// set player off
+// set guard off
 inline
-void Player::setOn(){
+void Guard::setOn(){
     this->off = false;
 }
 
-// check player is off or not
+// check guard is off or not
 inline
-bool Player::isOff(){
+bool Guard::isOff(){
     return this->off;
 }
 
 
+
 // get the boundary
 inline
-const sgds::RectangleBounds& Player::bounds() const{
+const sgds::RectangleBounds& Guard::bounds() const{
     return d_bound;
 }
 
+
 // check the collide
 inline
-bool Player::doesCollide(const sgds::RectangleBounds& candidate){
+bool Guard::doesCollide(const sgds::RectangleBounds& candidate){
     return d_bound.doesCollide(candidate);
 };
 
 // return the cell the sprite belong to
 inline
-int Player::getCell(){
+int Guard::getCell(){
     return ownerCell;
 }
+
 // set the cell the sprite belong to
 inline
-void Player::setCell(int index){
+void Guard::setCell(int index){
     ownerCell = index;
 }
 

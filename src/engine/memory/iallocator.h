@@ -1,5 +1,5 @@
 ﻿// iallocator.h
-
+    
 #ifndef INCLUDED_IALLOCATOR
 #define INCLUDED_IALLOCATOR
     

@@ -2,7 +2,7 @@
 
 #ifndef INCLUDED_COUNTING_ALLOCATOR
 #define INCLUDED_COUNTING_ALLOCATOR
-
+    
 # include "default_allocator.h"
     
 namespace sgdm

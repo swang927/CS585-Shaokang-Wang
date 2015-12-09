@@ -1,5 +1,5 @@
 // event_bus.h
-
+    
 #ifndef INCLUDED_IEVENT_BUS
 #define INCLUDED_IEVENT_BUS
 
@@ -10,42 +10,40 @@ namespace sgde{
 class EventBus : public sgds::ITickable
 {
   private:
-	  unsigned int d_queueSize = 1000;
-	  EventDispatcher d_evDispatcher;
-	  sgdc::DynamicArray<const IEvent*> d_eventQueue;
-	  static EventBus *event_instance;
+      unsigned int d_queueSize = 1000;
+      EventDispatcher d_evDispatcher;
+      sgdc::DynamicArray<const IEvent*> d_eventQueue;
 
   public:
-	//ACCESSORS
-	static EventBus* inst();
-	// MUTATORS
-	void setQueueSize(unsigned int size);
+    //ACCESSORS
+    static EventBus& inst();
+    // MUTATORS
+    void setQueueSize(unsigned int size);
 
-	// MEMBER FUNCTIONS
-	// return false if queue is full.
-	bool addEvent(const IEvent & ev);
-	// return false if the event is not there.
-	bool removeEvent(const IEvent & ev);
-	
+    // MEMBER FUNCTIONS
+    // return false if queue is full.
+    bool addEvent(const IEvent & ev);
+    // return false if the event is not there.
+    bool removeEvent(const IEvent & ev);
+    
 
-	void registerListener(const IEvent & ev, EventListenerCallbacksPtr listener);
-	void logoutListener(const IEvent & ev, EventListenerCallbacksPtr listener);
+    void registerListener(const IEvent & ev, EventListenerCallbacksPtr listener);
+    void logoutListener(const IEvent & ev, EventListenerCallbacksPtr listener);
 
-	// trigger event at once without adding to the event queue.
-	void triggerEvent(const IEvent & ev);
-	
-	void preTick() override;
-	void tick(float dtSec) override;
-	void postTick() override;
+    // trigger event at once without adding to the event queue.
+    void triggerEvent(const IEvent & ev);
+    
+    void preTick() override;
+    void tick(float dtSec) override;
+    void postTick() override;
 };
 
 
 //ACCESSORS
 inline
-EventBus* EventBus::inst(){
-	if (!event_instance)
-		event_instance = new EventBus();
-	return event_instance;
+EventBus& EventBus::inst(){
+    static EventBus inst;
+    return inst;
 }
 
 
@@ -53,7 +51,7 @@ EventBus* EventBus::inst(){
 inline
 void EventBus::setQueueSize(unsigned int size)
 {
-	d_queueSize = size;
+    d_queueSize = size;
 }
 
 
@@ -61,12 +59,12 @@ void EventBus::setQueueSize(unsigned int size)
 inline
 bool EventBus::addEvent(const IEvent & ev)
 {
-	if (d_queueSize == d_eventQueue.getLength()){
-		// this makes d_eventQ fixed size.
-		return false;
-	}
-	d_eventQueue.push(&ev);
-	return true;
+    if (d_queueSize == d_eventQueue.getLength()){
+        // this makes d_eventQ fixed size.
+        return false;
+    }
+    d_eventQueue.push(&ev);
+    return true;
 }
 
 
@@ -74,38 +72,38 @@ bool EventBus::addEvent(const IEvent & ev)
 inline
 bool EventBus::removeEvent(const IEvent & ev)
 {
-	unsigned int size = d_eventQueue.getLength();
-	bool ret = false;
-	for (unsigned int i = 0; i < size; ++i)
-	{
-		if (d_eventQueue[i]->type() == ev.type())
-		{
-			d_eventQueue.removeAt(i);
-			ret = true;
-		}
-	}
-	return ret;
+    unsigned int size = d_eventQueue.getLength();
+    bool ret = false;
+    for (unsigned int i = 0; i < size; ++i)
+    {
+        if (d_eventQueue[i]->type() == ev.type())
+        {
+            d_eventQueue.removeAt(i);
+            ret = true;
+        }
+    }
+    return ret;
 }
 
 
 // register event listener
 inline
 void EventBus::registerListener(const IEvent & ev, EventListenerCallbacksPtr listener){
-	d_evDispatcher.add(ev.type(), listener);
+    d_evDispatcher.add(ev.type(), listener);
 }
 
 // log out the event listener
 inline
 void EventBus::logoutListener(const IEvent & ev,EventListenerCallbacksPtr listener)
 {
-	d_evDispatcher.remove(ev.type(), listener);
+    d_evDispatcher.remove(ev.type(), listener);
 }
 
 
 // trigger event at once without adding to the event queue.
 inline
 void EventBus::triggerEvent(const IEvent & ev){
-	d_evDispatcher.dispatch(ev);
+    d_evDispatcher.dispatch(ev);
 }
 
 
@@ -121,12 +119,12 @@ void EventBus::tick(float dtSec){
 inline
 void EventBus::postTick()
 {
-	unsigned int size = d_eventQueue.getLength();
-	for (unsigned int i = 0; i < size; ++i)
-	{
-		d_evDispatcher.dispatch(*(d_eventQueue[i]));
-	}
-	d_eventQueue.clean();
+    unsigned int size = d_eventQueue.getLength();
+    for (unsigned int i = 0; i < size; ++i)
+    {
+        d_evDispatcher.dispatch(*(d_eventQueue[i]));
+    }
+    d_eventQueue.clean();
 }
 
 }; // end of namespace

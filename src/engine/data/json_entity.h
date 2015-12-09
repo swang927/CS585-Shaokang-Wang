@@ -2,7 +2,7 @@
 
 #ifndef INCLUDED_JSON_ENTITY
 #define INCLUDED_JSON_ENTITY
-
+    
 #include <string>
 #include <algorithm>
 #include "../containers/dynamic_array.h"
@@ -123,7 +123,6 @@ class JsonEntity{
 // CONSTRUCTORS
 inline
 JsonEntity::JsonEntity() : j_type(EntityType::JSON_NULL){
-
 }
 
 //string entity constructor.
@@ -184,7 +183,6 @@ JsonEntity& JsonEntity::operator = (const JsonEntity &other){
 // DESTRUCTOR
 inline
 JsonEntity::~JsonEntity(){
-	
 }
 
 

@@ -1,5 +1,5 @@
 // itickable.h
-    
+          
 #ifndef INCLUDED_ITICKABLE
 #define INCLUDED_ITICKABLE
 
@@ -10,11 +10,11 @@ namespace sgds
 // Simple interface (pure abstract class) for tracking an individual unit of game time in the world
 class ITickable {
   public:
-	// pre-process 
+    // pre-process 
     virtual    void preTick() = 0;
-	// process 
+    // process 
     virtual    void tick(float dtS) = 0;
-	// post-process
+    // post-process
     virtual    void postTick() = 0;    
 };
 

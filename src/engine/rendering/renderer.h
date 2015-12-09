@@ -1,5 +1,5 @@
 // renderer.h
-    
+     
 #ifndef INCLUDED_RENDERER
 #define INCLUDED_RENDERER
     
@@ -41,6 +41,8 @@ class Renderer{
     void addSprite(RenderableSprite* sprite);
     // use object manager to dealloc sprites memory(outside this class).
     void removeSprite(RenderableSprite* sprite);
+    // check if render have certain sprite
+    bool hasSprite(RenderableSprite* sprite);
     // set up the window with name and size: x & y 
     void setupWindow(std::string title, int width, int height);
     // return window width
@@ -55,8 +57,8 @@ class Renderer{
     sf::Texture& getTexture(const std::string & name);
     // Returns false once the window is ready to be destroyed
     bool isActive(); 
-	// get window
-	sf::RenderWindow *window();
+    // get window
+    sf::RenderWindow *window();
 
 };
 
@@ -114,6 +116,13 @@ void Renderer::removeSprite(RenderableSprite* sprite){
     assert(sprite);
     d_sprites.remove(sprite);
 };
+
+// check if render have certain sprite
+inline
+bool Renderer::hasSprite(RenderableSprite* sprite){
+    assert(sprite);
+    return d_sprites.has(sprite);
+}
 
 // set up the window with name and size: x & y 
 inline
@@ -178,14 +187,14 @@ int Renderer::window_height(){
 // close the current window
 inline
 void Renderer::closewindow(){
-	d_window.close();
+    d_window.close();
 }
 
 
 // get window
 inline
 sf::RenderWindow * Renderer::window(){
-	return &(this->d_window);
+    return &(this->d_window);
 }
 
 };

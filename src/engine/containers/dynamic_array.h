@@ -69,6 +69,8 @@ class DynamicArray {
     void clean();
     // check if the array is empty
     bool empty();
+    // check if the array contain certain element
+    bool has(const T& element);
     
 }; // end of class
 
@@ -106,7 +108,7 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T> &other) {
     allocator = other.allocator;
     elementCount = other.elementCount;
     array = allocator->get(other.capacity);
-	for (unsigned int i = 0; i < elementCount; i++)
+    for (unsigned int i = 0; i < elementCount; i++)
         allocator->construct(&(array[i]));
     for (unsigned int i = 0; i < elementCount; i++)
         array[i] = other.array[i];
@@ -125,7 +127,7 @@ const DynamicArray<T>& DynamicArray<T>:: operator=(const DynamicArray<T> &other)
         this->capacity = other.capacity;
         this->elementCount = other.elementCount;
         array = allocator->get(other.capacity);
-		for (unsigned int i = 0; i < elementCount; i++)
+        for (unsigned int i = 0; i < elementCount; i++)
             allocator->construct(&(array[i]));
         for (unsigned int i = 0; i < elementCount; i++)
             array[i] = other.array[i];
@@ -324,6 +326,23 @@ bool DynamicArray<T>::empty(){
         return true;
     return false;
 };
+
+
+// check if the array contain certain element
+template <class T>
+inline
+bool DynamicArray<T>::has(const T& element){
+    unsigned int index = -1;
+    for (unsigned int i = 0; i < elementCount; i++){
+        if (array[i] == element){
+            index = i;
+            break;
+        }
+    };
+    if (index == -1)
+        return false;
+    return true;
+}
 
 }; // end of namespace
 #endif

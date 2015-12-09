@@ -1,5 +1,5 @@
 // icollider.h
-    
+        
 #ifndef INCLUDED_ICOLLIDER
 #define INCLUDED_ICOLLIDER
 
@@ -16,8 +16,8 @@ class ICollider {
     virtual void setFlags(unsigned short flags) = 0;
     virtual bool canCollide(unsigned short flags) const = 0;
     virtual bool doesCollide(const RectangleBounds& candidate) = 0;
-	virtual int getCell() = 0;
-	virtual void setCell(int index) = 0;
+    virtual int getCell() = 0;
+    virtual void setCell(int index) = 0;
 };
 
 

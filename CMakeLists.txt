@@ -12,34 +12,28 @@ add_executable(${EXECUTABLE_NAME} game.m.cpp)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/SFML-2.3.2" ${CMAKE_MODULE_PATH})
-message (STATUS ${CMAKE_MODULE_PATH}) 
 #Find any version 2.X of SFML
 find_package(SFML 2 REQUIRED system window graphics network audio)
 if(SFML_FOUND)
   include_directories(${SFML_INCLUDE_DIR})
   message (STATUS ${SFML_INCLUDE_DIR}) 
   target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
-  message (STATUS ${SFML_LIBRARIES})
 endif()
 
 
-# we don't want to copy if we're building in the source dir
-if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
-    # list of files for which we add a copy rule
-    set(data_SHADOW player.png)
+# copy the image to work place
+configure_file(image/player.png ${CMAKE_CURRENT_BINARY_DIR}/image/player.png COPYONLY)
+configure_file(image/player_1.png ${CMAKE_CURRENT_BINARY_DIR}/image/player_1.png COPYONLY)
+configure_file(image/blue_guard.png ${CMAKE_CURRENT_BINARY_DIR}/image/blue_guard.png COPYONLY)
+configure_file(image/blue_guard_1.png ${CMAKE_CURRENT_BINARY_DIR}/image/blue_guard_1.png COPYONLY)
+configure_file(image/red_guard.png ${CMAKE_CURRENT_BINARY_DIR}/image/red_guard.png COPYONLY)
+configure_file(image/red_guard_1.png ${CMAKE_CURRENT_BINARY_DIR}/image/red_guard_1.png COPYONLY)
+configure_file(image/Brick_Wall.png ${CMAKE_CURRENT_BINARY_DIR}/image/Brick_Wall.png COPYONLY)
+configure_file(image/ninja_weapon.png ${CMAKE_CURRENT_BINARY_DIR}/image/ninja_weapon.png COPYONLY)
+configure_file(image/number_sheets.png ${CMAKE_CURRENT_BINARY_DIR}/image/number_sheets.png COPYONLY)
+configure_file(image/youLoss.png ${CMAKE_CURRENT_BINARY_DIR}/image/youLoss.png COPYONLY)
+configure_file(image/youWin.png ${CMAKE_CURRENT_BINARY_DIR}/image/youWin.png COPYONLY)
 
-    foreach(item IN LISTS data_SHADOW)
-        message(STATUS ${item})
-        add_custom_command(
-            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-            DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
-        )
-    endforeach()
-endif()
-
-# files are only copied if a target depends on them
-add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/player.png")
 
 
 #setup subdirectory
@@ -54,3 +48,7 @@ target_link_libraries (${EXECUTABLE_NAME} Input)
 target_link_libraries (${EXECUTABLE_NAME} Memory)
 target_link_libraries (${EXECUTABLE_NAME} Rendering)
 target_link_libraries (${EXECUTABLE_NAME} Scene)
+target_link_libraries (${EXECUTABLE_NAME} Events)
+target_link_libraries (${EXECUTABLE_NAME} Actors)
+target_link_libraries (${EXECUTABLE_NAME} Controllers)
+

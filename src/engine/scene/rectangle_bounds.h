@@ -1,5 +1,5 @@
 // rectangle_bounds.h
-
+        
 #ifndef INCLUDED_RECTANGELE_BOUND
 #define INCLUDED_RECTANGELE_BOUND
     
@@ -10,16 +10,16 @@ namespace sgds
 // A very simple bounding box (2D) rectangle
 class RectangleBounds {
   private:
-	// left corner position x
+    // left corner position x
     float _x;
-	// left corner position y 
+    // left corner position y 
     float _y;
-	// the width of bounding box
+    // the width of bounding box
     float _width;
-	// the heiht of bounding box
+    // the heiht of bounding box
     float _height;
 
-  public:
+public:
     // CONSTRUCTORS
     // default constructor.
     RectangleBounds();
@@ -30,31 +30,31 @@ class RectangleBounds {
     // OPERATOR OVERLOADS
     RectangleBounds& operator = (const RectangleBounds &other);
 
-	// NOT EQUAL OPERATOR OVERLOADS
-	bool operator != ( RectangleBounds &other);
+    // NOT EQUAL OPERATOR OVERLOADS
+    bool operator != ( RectangleBounds &other);
 
     // Getter
-	// left corner position x 
+    // left corner position x 
     float x() const;
-	// left corner position y 
+    // left corner position y 
     float y() const;
-	// the width of bounding box
+    // the width of bounding box
     float width() const;
-	// the heiht of bounding box
+    // the heiht of bounding box
     float height() const;
 
     // Setter
-	// set the left corner position x 
+    // set the left corner position x 
     void setX(float x);
-	// set the left corner position y
+    // set the left corner position y
     void setY(float y);
-	// set the width of bounding box
+    // set the width of bounding box
     void setWidth(float width);
-	// set the heiht of bounding box
+    // set the heiht of bounding box
     void setHeight(float height);
-	// set the width and heiht of bounding box
+    // set the width and heiht of bounding box
     void setDimesions(float width, float height);
-	// set the left corner position (x, y) 
+    // set the left corner position (x, y) 
     void setPosition(float x, float y);
 
     // collision detection 
@@ -104,13 +104,13 @@ RectangleBounds& RectangleBounds::operator = (const RectangleBounds &other){
 // NOT EQUAL OPERATOR OVERLOADS
 inline
 bool RectangleBounds::operator != (RectangleBounds &other){
-	if (this->_x == other._x
-		&& this->_y == other._y
-		&& this->_width == other._width
-		&& this->_height == other._height)
-		return false;
-	else
-		return true;
+    if (this->_x == other._x
+        && this->_y == other._y
+        && this->_width == other._width
+        && this->_height == other._height)
+        return false;
+    else
+        return true;
 }
 // Getter
 // get left corner position x 

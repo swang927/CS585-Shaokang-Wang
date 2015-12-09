@@ -5,4 +5,5 @@ add_subdirectory (input)
 add_subdirectory (memory)
 add_subdirectory (rendering)
 add_subdirectory (scene)
+add_subdirectory (events)
 
